@@ -21,9 +21,9 @@ A method that prevents outliers but significantly reduces efficiency is unlikely
 3. 🧩**Ensuring full compatibility with existing inference pipelines**<br/>
 We prioritize compatibility with widely adopted inference frameworks such as vLLM and SGLang. Rather than introducing architectural changes that break compatibility, OSP preserves computational invariance, allowing models to be directly integrated into existing pipelines without additional effort.
 
-<center>
-    <img src="./images/figure2.png" alt="drawing" width="800"/>
-</center>
+<p align="center">
+    <img src="./images/figure2.png" alt="drawing" width="700"/>
+</p>
 
 ## News
 
