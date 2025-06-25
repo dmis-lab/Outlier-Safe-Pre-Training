@@ -51,12 +51,12 @@ The models were trained on 1 trillion tokens, following the pre-training recipe 
             <th rowspan="2">EmbProj</th>
             <th rowspan="2">Ex. Kurt.</th>
             <th rowspan="2">Had.</th>
-            <th colspan="2">16-16-16</th>
+            <!-- <th colspan="2">16-16-16</th> -->
             <th colspan="2">4-4-4</th>
         </tr>
         <tr>
-            <th>Avg.</th>
-            <th>PPL</th>
+            <!-- <th>Avg.</th>
+            <th>PPL</th> -->
             <!-- <th>Avg.</th>
             <th>PPL</th>
             <th>Avg.</th>
@@ -75,8 +75,8 @@ The models were trained on 1 trillion tokens, following the pre-training recipe 
             <td>✗</td>
             <td>1818.56</td>
             <td>✗<br>✔</td>
-            <td>41.5<br>41.5</td>
-            <td>11.4<br>11.4</td>
+            <!-- <td>41.5<br>41.5</td>
+            <td>11.4<br>11.4</td> -->
             <!-- <td>39.7<br>40.2</td>
             <td>21.6<br>22.3</td>
             <td>39.7<br>40.3</td>
@@ -88,13 +88,13 @@ The models were trained on 1 trillion tokens, following the pre-training recipe 
         </tr>
         <tr>
             <td><a href="https://huggingface.co/dmis-lab/OSP-1.4B-100B-Muon-Only">🤗 OSP-1.4B-100B-Muon-Only</a></td>
-            <td>Muon†<br/>(w/o Adam)</td>
+            <td>Muon&dagger;<br/>(w/o Adam)</td>
             <td>✗</td>
             <td>✗</td>
             <td>361.35</td>
             <td>✗<br>✔</td>
-            <td>41.0<br>41.0</td>
-            <td>11.7<br>11.7</td>
+            <!-- <td>41.0<br>41.0</td>
+            <td>11.7<br>11.7</td> -->
             <!-- <td>38.4<br>37.5</td>
             <td>14.8<br>15.4</td>
             <td>38.3<br>37.5</td>
@@ -111,8 +111,8 @@ The models were trained on 1 trillion tokens, following the pre-training recipe 
             <td>✗</td>
             <td>1575.12</td>
             <td>✗<br>✔</td>
-            <td>41.5<br>41.5</td>
-            <td>11.4<br>11.4</td>
+            <!-- <td>41.5<br>41.5</td>
+            <td>11.4<br>11.4</td> -->
             <!-- <td>40.0<br>40.6</td>
             <td>13.8<br>12.9</td>
             <td>40.0<br>40.6</td>
@@ -129,8 +129,8 @@ The models were trained on 1 trillion tokens, following the pre-training recipe 
             <td>✗</td>
             <td>66.69</td>
             <td>✗<br>✔</td>
-            <td><strong>41.8</strong><br><strong>41.8</strong></td>
-            <td><strong>11.2</strong><br><strong>11.2</strong></td>
+            <!-- <td><strong>41.8</strong><br><strong>41.8</strong></td>
+            <td><strong>11.2</strong><br><strong>11.2</strong></td> -->
             <!-- <td><strong>41.0</strong><br><strong>40.8</strong></td>
             <td>12.4<br>12.2</td>
             <td><strong>40.9</strong><br><strong>40.8</strong></td>
@@ -147,8 +147,8 @@ The models were trained on 1 trillion tokens, following the pre-training recipe 
             <td>✔</td>
             <td>703.23</td>
             <td>✗<br>✔</td>
-            <td>40.0<br>40.0</td>
-            <td>12.3<br>12.3</td>
+            <!-- <td>40.0<br>40.0</td>
+            <td>12.3<br>12.3</td> -->
             <!-- <td>38.4<br>39.2</td>
             <td>14.8<br>13.9</td>
             <td>38.4<br>39.3</td>
@@ -165,8 +165,8 @@ The models were trained on 1 trillion tokens, following the pre-training recipe 
             <td>✔</td>
             <td><strong>0.04</strong></td>
             <td>✗<br>✔</td>
-            <td>41.4<br>41.4</td>
-            <td><strong>11.2</strong><br><strong>11.2</strong></td>
+            <!-- <td>41.4<br>41.4</td>
+            <td><strong>11.2</strong><br><strong>11.2</strong></td> -->
             <!-- <td>40.6<br>40.5</td>
             <td><strong>12.2</strong><br><strong>12.1</strong></td>
             <td>40.6<br>40.5</td>
@@ -178,7 +178,7 @@ The models were trained on 1 trillion tokens, following the pre-training recipe 
         </tr>
     </tbody>
 </table>
-†Model configuration that disables decoupled embedding optimization by training with Muon optimizer without Adam optimization on embedding layers 
+&dagger;Model configuration that disables decoupled embedding optimization by training with Muon optimizer without Adam optimization on embedding layers 
 
 
 ## Getting Started
@@ -215,12 +215,12 @@ The three integers (e.g. `4 4 4`) represent the number of bits used for weight, 
 | Quantization | Adam | Muon (OSP) |
 |:-------------|-----:|-----------:|
 | RTN | 14475.51 | **45.92** |
-| + FFN Had&dagger; | 4794.00 | **19.27** |
+| + FFN Had&ddagger; | 4794.00 | **19.27** |
 | + GPTQ | 3723.46 | **14.29** |
 | + QuaRot | 16.62 | **14.38** |
 | + SpinQuant | 14.94 | **13.66** |
 
-&dagger;Only applies Hadamard transform to FFN hidden states.
+&ddagger;Only applies Hadamard transform to FFN hidden states.
 
 
 ### Evaluation on Lighteval Benchmarks
