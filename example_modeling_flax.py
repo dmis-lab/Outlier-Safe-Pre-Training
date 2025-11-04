@@ -30,7 +30,6 @@ from jax.experimental.pallas.ops.tpu.splash_attention.splash_attention_mask impo
     CausalMask,
     MultiHeadMask,
 )
-from jax.sharding import PartitionSpec as P
 from optax import softmax_cross_entropy_with_integer_labels as cross_entropy
 
 
@@ -82,7 +81,6 @@ class LlamaFeedForward(LlamaBase, nn.Module):
         self.w3 = nn.DenseGeneral(self.dim)
 
     def __call__(self, x: Array) -> Array:
-        x = jax.lax.with_sharding_constraint(x, P(("dp", "op", "fsdp")))
         return self.w3(self.w1(x) * nn.silu(self.w2(x)))
 
 
@@ -94,7 +92,6 @@ class LlamaLayer(LlamaBase, nn.Module):
         self.norm2 = nn.RMSNorm(feature_axes=self.rmsnorm_feature_axes)
 
     def __call__(self, x: Array) -> Array:
-        x = jax.lax.with_sharding_constraint(x, P(("dp", "op", "fsdp")))
         x = x + self.attn(self.norm1(x))
         x = x + self.ffn(self.norm2(x))
         return x
