@@ -27,6 +27,7 @@ We prioritize compatibility with widely adopted inference frameworks such as vLL
 
 ## News
 
+- **2025-11-04**: Released an OSP implementation including **SSNorm** and **EmbProj**. Check out [the code](./example_modeling_flax.py)!
 - **2025-06-25**: Released **Outlier-Safe Pre-Training for Robust 4-Bit Quantization of Large Language Models** on [arXiv](https://www.arxiv.org/abs/2506.19697), with [GitHub](https://github.com/dmis-lab/Outlier-Safe-Pre-Training) and [models](https://huggingface.co/collections/dmis-lab/outlier-safe-pre-training-osp-685bda10aa1e8a19fcb58ea8).
 - **2025-05-16**: Our paper has been accepted to ACL 2025! 🎉
 
@@ -180,6 +181,50 @@ The models were trained on 1 trillion tokens, following the pre-training recipe 
 </table>
 &dagger;Model configuration that disables decoupled embedding optimization by training with Muon optimizer without Adam optimization on embedding layers 
 
+
+## Implementation Explanation
+
+Two core components of OSP, SSNorm and EmbProj, introduce architectural modifications to the transformer model while preserving full inference-time compatibility. To facilitate understanding, we provide [a simplified implementation of OSP](./example_modeling_flax.py), closely aligned with the version used in our large-scale experiments. All experiments were conducted using JAX/Flax, though adapting the code to PyTorch should be straightforward.
+
+#### SSNorm
+
+The primary modification occurs in the normalization layers:
+```python
+class LlamaLayer(LlamaBase, nn.Module):
+    def setup(self):
+        self.attn = LlamaAttention(**self.kwargs)
+        self.ffn = LlamaFeedForward(**self.kwargs)
+        self.norm1 = nn.RMSNorm(feature_axes=self.rmsnorm_feature_axes)
+        self.norm2 = nn.RMSNorm(feature_axes=self.rmsnorm_feature_axes)
+```
+
+For Single-Scale Normalization (SSNorm), the layer is initialized as follows:
+```python
+nn.RMSNorm(feature_axes=())
+```
+This configuration constrains the normalization to use a single scalar parameter as the scaling factor, instead of per-feature scaling. By doing so, direct channel-wise operations are removed, mitigating the emergence of extreme activations. Since the scaling parameter remains learnable, it can still preserve the overall training dynamics.
+
+#### EmbProj
+
+The EmbProj module introduces a pair of lightweight linear transformations on the embedding space:
+
+```python
+class Llama(LlamaBase, nn.Module):
+    def setup(self):
+        self.wte = nn.Embed(self.vocab, self.dim)
+        self.layer = [LlamaLayer(**self.kwargs) for _ in range(self.layers)]
+        self.norm = nn.RMSNorm(feature_axes=self.rmsnorm_feature_axes)
+        self.head = nn.DenseGeneral(self.vocab)
+
+        self.rot1 = self.rot2 = lambda x: x
+        if self.rotated_embed:
+            self.rot1 = nn.DenseGeneral(self.dim, kernel_init=init.orthogonal())
+            self.rot2 = nn.DenseGeneral(self.dim, kernel_init=init.orthogonal())
+```
+
+When EmbProj is enabled, the rotation layers are instantiated as orthogonally initialized linear projections. These layers are optimized using the Muon optimizer rather than AdamW, which is applied to the embedding matrices. This means the optimization process must be disentangled between the two.
+
+After training, the two rotation matrices (`rot1`, `rot2`) can be merged with the embedding and language model head, respectively, ensuring that the final model remains architecturally identical to a standard transformer at inference time.
 
 ## Getting Started
 
