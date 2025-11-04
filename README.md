@@ -202,7 +202,7 @@ For Single-Scale Normalization (SSNorm), the layer is initialized as follows:
 ```python
 nn.RMSNorm(feature_axes=())
 ```
-This configuration constrains the normalization to use a single scalar parameter as the scaling factor, instead of per-feature scaling. By doing so, direct channel-wise operations are removed, mitigating the emergence of extreme activations. Since the scaling parameter remains learnable, it can still preserve the overall training dynamics.
+This configuration constrains the normalization to use a single scalar parameter as the scaling factor, instead of per-feature scaling. By doing so, direct channel-wise operations are removed, eliminating the emergence of extreme activations. Since the scaling parameter remains learnable, it can still preserve the overall training dynamics.
 
 #### EmbProj
 
@@ -222,9 +222,9 @@ class Llama(LlamaBase, nn.Module):
             self.rot2 = nn.DenseGeneral(self.dim, kernel_init=init.orthogonal())
 ```
 
-When EmbProj is enabled, the rotation layers are instantiated as orthogonally initialized linear projections. These layers are optimized using the Muon optimizer rather than AdamW, which is applied to the embedding matrices. This means the optimization process must be disentangled between the two.
+When EmbProj is enabled, the projection layers are instantiated with orthogonal initialization. These layers should be optimized using the Muon optimizer rather than AdamW, which is applied to the embedding matrices. This means the optimization process must be disentangled between the two.
 
-After training, the two rotation matrices (`rot1`, `rot2`) can be merged with the embedding and language model head, respectively, ensuring that the final model remains architecturally identical to a standard transformer at inference time.
+After training, the two projection matrices (`rot1`, `rot2`) can be merged with the embedding and language model head, respectively, ensuring that the final model remains architecturally identical to a standard transformer at inference time.
 
 ## Getting Started
 
